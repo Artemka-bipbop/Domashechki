@@ -1,0 +1,213 @@
+#include <iostream>
+#include <iomanip>
+#include <cmath>
+using namespace std;
+
+
+void input_bruh(int &S, int &V,int &Ro, int &C){
+    while(1){
+        cout<<"Iput S,V of airplane and efficients: Ro,C"<<endl;
+        cin>>S>>V>>Ro>>C;
+        if(S>0 && V>0 && C>0 && Ro>0)break;
+        cout<<"They can't be so unrealistic"<<endl;
+    }
+}
+void DZ_1(){
+    int s=0,v=0,ro=0,c=0;
+    input_bruh(s,v,ro,c);
+    cout<<"There ur Force: "<<0.5*ro*v*v*c*s<<"_[N]";
+}
+void DZ_2(){
+    int s=0,v=0,ro=0,c=0;
+    input_bruh(s,v,ro,c);
+    cout<<"There ur Resistance: "<<0.5*ro*v*v*c*s<<"_[N]";
+}
+void DZ_3(){
+    float m=0,l=0,d=0,t=0;
+    while(1){
+        cout<<"input mass (m) of airplane and resistance (D) of air: ";
+        cin>>m>>d;
+        if(m>0 && d>0) break;
+        cout<<"That's can't be real, please, ";
+    }
+    cout<<"Input L(force of up) and T(tyaga of the barhat) of airplane: ";
+    cin>>l>>t;
+    cout<<"There accselleration of airplane in direction (OX): "<<(t-d)/m<<endl;
+    cout<<"and this accseleration of vertical direction (OY): "<<(l-m*9.81)/m;
+}
+void DZ_4(){
+    float ay=0,h=0;
+    while(1){
+        cout<<"Please, input vertical accseleration and height, what u need: ";
+        cin>>ay>>h;
+        if(ay>0 && h>0) break;
+        cout<<"Bruh, the need to be >0"<<endl;
+    }
+    cout<<"There ur time: "<<sqrt((2*h)/ay)<<"seconds";
+}
+void aboba(int a){
+    if(a==0) cout<<"m: ";
+    if(a==1) cout<<"s: ";
+    if(a==2) cout<<"V: ";
+    if(a==3) cout<<"CL: ";
+    if(a==4) cout<<"Cd: ";
+}
+void DZ_5(){
+    cout<<"air density = 1.29"<<endl;
+    float Ro=1.29;
+    int planes[3][5];
+    for(int i=0; i<3;i++){
+        cout<<"Input data about "<<i+1<<" plane (m,s,V,CL,Cd): ";
+        int k=0;
+        for(int j=0; j<5; j++){
+            cin>>planes[i][j];
+            if(planes[i][j]>0)k++;
+    }
+        while(1){
+            if(k==5) break;
+            else{
+                for(int j=0; j<5; j++){
+                    if(planes[i][j]<=0){
+                        cout<<"input again variable ";
+                        aboba(j);
+                        cin>>planes[i][j];
+                        if(planes[i][j]>0)k++;
+                    }
+                }
+            }
+        }
+
+}
+
+      float L1=0.5*Ro*planes[0][2]*planes[0][2]*planes[0][1]*planes[0][3],L2=0.5*Ro*planes[1][2]*planes[1][2]*planes[1][1]*planes[1][3],L3=0.5*Ro*planes[2][2]*planes[2][2]*planes[2][1]*planes[2][3];
+    // for what??? float D1=0.5*Ro*planes[0][2]*planes[0][2]*planes[0][1]*planes[0][4], D2=0.5*Ro*planes[1][2]*planes[1][2]*planes[1][1]*planes[1][4],D3=0.5*Ro*planes[2][2]*planes[2][2]*planes[2][1]*planes[2][4];
+      float ay1 = (L1-planes[0][0]*9.81)/planes[0][0], ay2=(L2-planes[1][0]*9.81)/planes[1][0], ay3=(L3-planes[2][0]*9.81)/planes[2][0];
+      float max=ay1;
+      if (ay2 > max) {
+              max = ay2;
+          }
+          if (ay3 > max) {
+              max = ay3;
+          }
+      if(max==ay1)cout<<"The fastest plane is 1";
+      if(max==ay2)cout<<"The fastest plane is 2";
+      if(max==ay3)cout<<"The fastest plane is 3";
+}
+void DZ_6(){
+    cout<<"At this task we'll take airplane MC21-300: S of his wing=150m^2 and CL = 18,2"<<endl;
+    int S=150;
+    float P = 18.2;
+    int n=0;
+    cout<<"Input the count of dots in the traectory: ";
+    cin>>n;
+    float V[n],Ro[n];
+    for(int i=0; i<n;i++){
+        cout<<"input V["<<i+1<<"] and Ro["<<i+1<<"]: ";
+        cin>>V[i]>>Ro[i];
+        while(1){
+            if(Ro[i]>0)break;
+            cout<<"Ro can't be <=0, input Ro["<<i+1<<"] again: ";
+            cin>>Ro[i];
+        }
+    }
+    cout << fixed << setprecision(2);
+    cout<<"|  Point  |  Speed  |   R_o   |       L       |"<<endl;
+    for(int i=0; i<n; i++){
+        cout<<"|"<<setw(9)<<i+1<<"|"<<setw(9)<<V[i]<<"|"<<setw(9)<<Ro[i]<<"|"<<setw(15)<<0.5*V[i]*V[i]*S*P*Ro[i]<<"|"<<endl;
+
+    }
+}
+void DZ_7(){
+    float t,l,d, m =8000.0;
+    cout<<"In this task we'll think, that mass of airplane is 8000 kg"<<endl;
+    cout<<"Input T, L, D: ";
+    cin>>t>>l>>d;
+    while(1){
+        if(d>0) break;
+        cout<<"Resistance of air (D) can't be <=0, input D again: ";
+        cin>>d;
+    }
+    if((t-d)/m>0.5) cout<<"The plane is gaining altitude";
+    else if((t-d)/m<0) cout<<"The plane is descending";
+    else cout<<"Plane in flight straight now";
+}
+
+struct airplane{
+        float m,t,l,d;
+};
+
+void DZ_8(){
+    int n;
+    cout<<"Input count of the planes: ";
+    cin>>n;
+    airplane planes[n];
+
+    for(int i=0; i<n; i++){
+        cout<<"Please, input m, T , L, D for plane number "<<i+1<<": ";
+        cin>>planes[i].m>>planes[i].t>>planes[i].l>>planes[i].d;
+        if((planes[i].l-planes[i].m*9.81)/planes[i].m < 0){
+            int ok=0;
+            cout<<"The plane is descending."<<endl;
+            cout<<"Would you like to replace the data on the plane's mass and lift? (1 - Yes | 2 - No): ";
+            while(1){
+                cin>>ok;
+                if(ok ==1 || ok==2)break;
+                cout<<"You should choose 1-Yes or 2-No: ";
+            }
+            if(ok==1) i--;
+        }
+
+    }
+
+
+    cout<<"------------------------------------------------------------"<<endl;
+    for(int i=0; i<n; i++){
+        float a=(planes[i].l-planes[i].m*9.81)/planes[i].m;
+        cout<<"Acselleretion plane number "<<i+1<<": "<<a<<endl;
+        cout<<"The time it takes to cover 1,000 meters: "<<sqrt(2.0*1000.0/a)<<endl;
+        cout<<"------------------------------------------------------------"<<endl;
+
+    }
+
+}
+
+int main()
+{
+    int mode=0;
+    while(1){
+        cout<<"input the number of DZ(1-10): ";
+        cin>>mode;
+        if(mode>0 && mode <=10) break;
+        cout<<"Try again and ";
+    }
+     switch(mode){
+         case(1):
+             DZ_1();
+            break;
+         case(2):
+             DZ_2();
+             break;
+         case(3):
+            DZ_3();
+            break;
+         case(4):
+            DZ_4();
+            break;
+         case(5):
+            DZ_5();
+            break;
+         case(6):
+            DZ_6();
+            break;
+         case(7):
+            DZ_7();
+            break;
+         case(8):
+            DZ_8();
+            break;
+         default:
+             cout<<"Try again and ";
+     }
+   return 0;
+}
+
