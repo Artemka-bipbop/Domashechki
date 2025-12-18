@@ -8,12 +8,15 @@
 #include <memory>
 #include <cstdio>
 
+
+const double GRAVITY = 9.81;               // Ускорение свободного падения, м/с²
+const double R_AIR = 287.05;               // Газовая постоянная воздуха, Дж/(кг·К)
 //Названия в коде не менялись, но данные стоят для ТУ-134 12-го варианта
 //Названия в коде не менялись, но данные стоят для ТУ-134 12-го варианта
 const double TU154_MASS = 47000.0;          // Масса самолета, кг (ТУ-134)
 const double TU154_WING_AREA = 127.0;       // Площадь крыла, м² (ТУ-134)
-const double TU154_NOMINAL_THRUST = 2 * 68600.0 * 1.1; // Суммарная тяга с учётом 110%, Н
-const double MAX_THRUST_PERCENT = 0.85;     // Реалистичный процент тяги
+const double TU154_NOMINAL_THRUST = 2 * 68600.0; // Суммарная тяга, Н
+const double MAX_THRUST_PERCENT = 1.1;     // Реалистичный процент тяги
 const double INITIAL_ALTITUDE = 500.0;      // Начальная высота, м
 const double FINAL_ALTITUDE = 7000.0;       // Конечная высота, м
 const double INITIAL_VELOCITY = 330.0 / 3.6; // Начальная скорость, м/с (330 км/ч)
