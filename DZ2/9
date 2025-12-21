@@ -1,84 +1,53 @@
-﻿#include <iostream>
-#include <vector>
-#include <iomanip>  
-#include <cmath>     
-#include <cstdlib>    
-#include <ctime>      
 
+﻿#include <iostream>
 using namespace std;
 
-int main() {
-    const double v0 = 50.0;
-    const double g = 9.8;
-    const double dt = 1.0;
+struct Aircraft {
+    double m, s, t, k1, k2;
+};
 
-    if (v0 <= 0) {
-        cout << "Предупреждение: начальная скорость v0 должна быть положительной!" << endl;
-        return 1;
+int main()
+{
+    int n=0;
+    const double g = 9.81;
+    double v = 0, p = 0;
+    cout << "Введите количество самолетов N:" << endl;
+    cin >> n;
+    cout << "Введите скорость, с которой будут лететь самолеты V:" << endl;
+    cin >> v;
+    cout << "Введите плотность воздуха p:" << endl;
+    cin >> p;
+    Aircraft* planes = new Aircraft[n];
+    double* a = new double[n];
+    cout << "Необходимо ввести информацию для каждого самолета:" << endl;
+    for (int i = 0; i < n; i++) {
+        double l1 = 0, l2 = 0;
+        cout << "Введите значение массы для самолета под номером " << i + 1 << endl;
+        cin >> planes[i].m;
+        cout << "Введите значение площади крыла для самолета под номером " << i + 1 << endl;
+        cin >> planes[i].s;
+        cout << "Введите значение тяги для самолета под номером " << i + 1 << endl;
+        cin >> planes[i].t;
+        cout << "Введите значение коэффициента подъемной силы для самолета под номером " << i + 1 << endl;
+        cin >> planes[i].k1;
+        cout << "Введите значение коэффициента сопротивления для самолета под номером " << i + 1 << endl;
+        cin >> planes[i].k2;
+        l1 = 0.5 * p * pow(v, 2) * planes[i].s * planes[i].k1;
+        l2 = 0.5 * p * pow(v, 2) * planes[i].s * planes[i].k2;
+        cout << "Подъемная сила для самолета под номером " << i + 1 << " равняется:" << l1 << endl;
+        cout << "Аэродинамическое сопротивление для самолета под номером " << i + 1 << " равняется:" << l2 << endl;
+        a[i] = (l1 - planes[i].m * g) / planes[i].m;
     }
-
-    vector<double> times;
-    vector<double> heights;
-
-    for (double t = 0.0; t <= 1000.0; t += dt) {
-        double h = v0 * t - 0.5 * g * t * t;
-        if (h < 0.0) {
-            break;
-        }
-        times.push_back(t);
-        heights.push_back(h);
-    }
-
-    cout << "ИСХОДНАЯ ТРАЕКТОРИЯ" << endl;
-    cout << left << setw(10) << "Время (с) "
-        << setw(15) << "Высота (м)" << endl;
-    cout << string(20, '-') << endl;
-    cout << left << fixed << setprecision(2);
-
-    for (size_t i = 0; i < times.size(); ++i) {
-        cout << setw(10) << times[i]
-            << setw(15) << heights[i] << endl;
-    }
-
-    srand(time(0));
-
-    vector<double> noisy_heights = heights;
-
-    for (size_t i = 0; i < noisy_heights.size(); ++i) {
-        double noise = (rand() % 2000) / 100.0 - 10.0;
-        noisy_heights[i] += noise;
-    }
-    size_t n = noisy_heights.size();
-    vector<double> smoothed(n);
-
-    if (n >= 3) {
-
-        smoothed[0] = noisy_heights[0];
-        smoothed[n - 1] = noisy_heights[n - 1];
-
-        for (size_t i = 1; i + 1 < n; ++i) {
-            smoothed[i] = (noisy_heights[i - 1] + noisy_heights[i] + noisy_heights[i + 1]) / 3.0;
+    double temp1 = a[0];
+    int temp2 = 0;
+    for (int i = 0; i < n; i++) {
+        if (a[i] > temp1) {
+            temp1 = a[i];
+            temp2 = i;
         }
     }
-    else {
-        smoothed = noisy_heights;
-    }
-
-    cout << "\nСРАВНЕНИЕ ВЫСОТ:" << endl;
-    cout << "===============" << endl;
-
-    cout << left << setw(8) << "Индекс"
-        << setw(15) << "Шумные (м)"
-        << setw(15) << "Сглаженные (м)"
-        << setw(15) << "Исходные (м)" << endl;
-    cout << string(53, '-') << endl;
-
-    for (size_t i = 0; i < n; ++i) {
-        cout << left << setw(8) << i
-            << setw(15) << noisy_heights[i]
-            << setw(15) << smoothed[i]
-            << setw(15) << heights[i] << endl;
-    }
-
+    cout << "Наибольшее ускорение имеет самолет под номером " << temp2+1 << " и оно равняется " << temp1 << endl;
+    delete[] planes;
+    delete[] a;
     return 0;
 }
