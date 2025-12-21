@@ -1,87 +1,57 @@
-﻿#include <iostream>
-#include <vector>
-#include <iomanip>
 
+﻿#include <iostream>
 using namespace std;
 
-struct Point {
-    double x, y;
-};
-
-class Rocket {
-private:
-    double x, y;
-    double vx, vy;
-    double g;
-
-public:
-
-    Rocket(double startX, double startY, double startVx, double startVy)
-        : x(startX), y(startY), vx(startVx), vy(startVy), g(9.8) {
+int main()
+{
+    /*В условии сказано, что самолет может менять тягу, но так как требуется найти вертикальное ускорение, которое расчитывается через массу и подъемную силу, предположу,
+    что именно она должна меняться*/
+    double planes[4], h = 0;
+    const double g = 9.81;
+    cout << "Введите значение массы самолета M:" << endl;
+    cin >> planes[0];
+    cout << "Введите минимальное значение подъемной силы самолета Lmin:" << endl;
+    cin >> planes[1];
+    cout << "Введите максимальное значение подъемной силы самолета Lmax:" << endl;
+    cin >> planes[2];
+    cout << "Введите значение шага, с которым изменяется подъемная сила самолета delta_L:" << endl;
+    cin >> planes[3];
+    cout << "Введите значение высоты, которую необходимо набрать самолетам:" << endl;
+    cin >> h;
+    if (h < 0) {
+        cout << "Высота меньше 0, введите корректные данные!";
+        return 1;
     }
 
-
-    void updatePosition(double dt) {
-        x += vx * dt;
-        y += vy * dt;
-        vy -= g * dt;
-    }
-
-    void changeVelocity(double deltaVx, double deltaVy) {
-        vx += deltaVx;
-        vy += deltaVy;
-    }
-
-    Point getPosition() const {
-        return { x, y };
-    }
-
-    pair<double, double> getVelocity() const {
-        return { vx, vy };
-    }
-};
-
-int main() {
-    const double dt = 1.0;
-    const double T = 10.0;
-
-    vector<Rocket> squad;
-    squad.reserve(5);
-
-    squad.emplace_back(1000, 10, 0, 50);
-    squad.emplace_back(900, 15, -5, 40);
-    squad.emplace_back(1100, 5, 5, 45);
-    squad.emplace_back(950, 20, -3, 35);
-    squad.emplace_back(1050, 0, 3, 55);
-
-    vector<vector<Point>> trajectories(5);
-
-    for (double t = 0; t <= T; t += dt) {
-        for (size_t i = 0; i < squad.size(); ++i) {
-
-            trajectories[i].push_back(squad[i].getPosition());
-
-            squad[i].updatePosition(dt);
+    double temp_a = -1;
+    for (int i = 0; i < (planes[2] - planes[1]) / planes[3]; i++) {
+        double a = ((planes[1] + planes[3] * i) - planes[0] * g) / planes[0];
+        if (a > 0) {
+            temp_a = a;
+            break;
         }
     }
-
-    cout << left << setw(10) << "Ракета"
-        << setw(15) << " X (м)"
-        << setw(15) << "Y (м)"
-        << setw(20) << "Скорость (Vx, Vy)" << endl;
-    cout << string(60, '-') << endl;
-
-    cout << fixed << setprecision(2);
-
-    for (size_t i = 0; i < squad.size(); ++i) {
-        Point pos = squad[i].getPosition();
-        auto velocity = squad[i].getVelocity();
-
-        cout << left << setw(10) << i + 1
-            << setw(15) << pos.x
-            << setw(15) << pos.y
-            << "(" << velocity.first << ", " << velocity.second << ") м/с" << endl;
+    if (temp_a < 0) {
+        cout << "Для всех значений подъемной силы вертикальное ускорение меньше 0! Введите корректные данные!" << endl;
+        return 1;
+    }
+    double temp_t = sqrt(2 * h / temp_a);
+    double temp_l = 0;
+    for (double i = planes[1]; i <= planes[2]; i += planes[3]) {
+        double a = (i - planes[0] * g) / planes[0];
+        if (a > 0) {
+            cout << "Вертикальное ускорение для значения подъемной силы " << i << " равняется " << a << endl;
+            double t = sqrt(2 * h / a);
+            cout << "Время, необходимое для набора заданной высоты равняется " << t << endl;;
+            if (t < temp_t) {
+                temp_t = t;
+                temp_l = i;
+            }
+        }
+        else
+            cout << "Для подъемной силы " << i << " ускорение меньше 0, невозможно расчитать время для набора высоты!" << endl;
     }
 
+    cout << "Оптимальное значение подъемной силы равняется: " << temp_l << ", а время набора заданной высоты для этой подъемной силы равняется: " << temp_t << endl;
     return 0;
 }
