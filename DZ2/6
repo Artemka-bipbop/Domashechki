@@ -1,64 +1,39 @@
 ﻿#include <iostream>
-#include <vector>
-#include <iomanip>  
-#include <cmath>     
-#include <algorithm>  
-
+#include <iomanip>
 using namespace std;
 
-int main() {
-    const double v0 = 50;
-    const double g = 9.8;
-    const double dt = 1.0;
+int main()
+{
+    int n = 0;
+    double s = 0, k = 0;
+    cout << "Введите число точек на траектории:" << endl;
+    cin >> n;
+    cout << "Введите площадь крыла самолета S:" << endl;
+    cin >> s;
+    cout << "Введите коэффициент подъемной силы k:" << endl;
+    cin >> k;
 
-    if (v0 <= 0) {
-        cout << "Предупреждение: начальная скорость v0 должна быть положительной!" << endl;
-        return 1;
+    double* v = new double[n];
+    double* p = new double[n];
+    for (int i = 0; i < n; i++) {
+        cout << "Введите значение скорости V в точке под номером " << i + 1 << endl;
+        cin >> v[i];
+        cout << "Введите значение плотности воздуха р в точке под номером " << i + 1 << endl;
+        cin >> p[i];
     }
 
-    vector<double> times;
-    vector<double> heights;
+    cout << fixed << setprecision(2) << endl;
+    cout << "Таблица траектории движения:" << endl;
+    cout << "-----------------------------------------------" << endl;
+    cout << "| Шаг | Скорость | Плотность | Подъемная сила |" << endl;
+    cout << "-----------------------------------------------" << endl;
 
-    for (double t = 0.0; t <= 1000.0; t += dt) {
-        double h = v0 * t - 0.5 * g * t * t;
-
-        if (h < 0.0) {
-            break;
-        }
-
-        times.push_back(t);
-        heights.push_back(h);
+    for (int i = 0; i < n; i++) {
+        double L = 0.5 * p[i] * pow(v[i], 2) * s * k;
+        cout << "|" << setw(5) << i + 1 << "|" << setw(10) << v[i] << "|" << setw(11) << p[i] << "|" << setw(16) << L << "|" << endl;
+        cout << "-----------------------------------------------" << endl;
     }
-
-    cout << left << setw(10) << "Время (с) "
-        << setw(15) << "Высота (м)" << endl;
-    cout << string(20, '-') << endl;
-
-    cout << left << fixed << setprecision(2);
-
-    for (size_t i = 0; i < times.size(); ++i) {
-        cout << setw(10) << times[i]
-            << setw(15) << heights[i] << endl;
-    }
-
-    auto new_end = remove_if(heights.begin(), heights.end(), [](double h) {
-        return h < 10.0;
-        });
-
-    heights.erase(new_end, heights.end());
-
-    cout << "\nПосле удаления значений < 10 м:" << endl;
-
-    if (heights.empty()) {
-        cout << "Вектор стал пустым (все значения были < 10 м)" << endl;
-    }
-    else {
-        cout << "Содержимое: ";
-        for (double h : heights) {
-            cout << h << " ";
-        }
-        cout << endl;
-    }
-
+    
+    delete[] v, p;
     return 0;
 }
