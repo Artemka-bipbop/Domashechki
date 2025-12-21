@@ -1,67 +1,27 @@
 ﻿#include <iostream>
-#include <vector>
-#include <iomanip>  
-#include <cmath>     
-#include <algorithm>  
-
 using namespace std;
 
-int main() {
-    const double v0 = 50;
-    const double g = 9.8;
-    const double dt = 1.0;
-
-    if (v0 <= 0) {
-        cout << "Предупреждение: начальная скорость v0 должна быть положительной!" << endl;
-        return 1;
-    }
-
-    vector<double> times;
-    vector<double> heights;
-
-    for (double t = 1; t <= 20; t += dt) {
-        double h = v0 * t - 0.5 * g * t * t;
-
-        times.push_back(t);
-        heights.push_back(h);
-    }
-
-    cout << left << setw(10) << "Время (с) "
-        << setw(15) << "Высота (м)" << endl;
-    cout << string(20, '-') << endl;
-
-    cout << left << fixed << setprecision(2);
-
-    for (size_t i = 0; i < times.size(); ++i) {
-        cout << setw(10) << times[i]
-            << setw(15) << heights[i] << endl;
-    }
-
-    auto it = find_if(heights.begin(), heights.end(),
-        [](double h) {
-            return h <= 0.0;
-        });
-
-    if (it == heights.end()) {
-        cout << "Падения не было в диапазоне измерений." << endl;
-        cout << "Все высоты положительные." << endl;
-    }
-    else {
-
-        size_t idx = distance(heights.begin(), it);
-
-        double t_fall = times[idx];
-        double h_fall = heights[idx];
-
-        cout << "Первый момент времени, когда высота <= 0:" << endl;
-        cout << "Индекс: " << idx << endl;
-        cout << "Время падения: " << t_fall << " с" << endl;
-        cout << "Высота в этот момент: " << h_fall << " м" << endl;
-
-        if (t_fall == 0.0) {
-            cout << "Примечание: Высота на t=0 уже равна 0" << endl;
-        }
-    }
-
+int main()
+{
+    double t = 0, l = 0, d = 0, m = 0;
+    const double g = 9.81;
+    cout << "Введите значение тяги T:" << endl;
+    cin >> t;
+    cout << "Введите значение подъемной силы L:" << endl;
+    cin >> l;
+    cout << "Введите значение сопротивления D:" << endl;
+    cin >> d;
+    cout << "Введите значение массы M:" << endl;
+    cin >> m;
+    double a1 = (t - d) / m;
+    double a2 = (l - m * g) / m;
+    cout << "Ускорение по направлению равняется: " << a1 << endl;
+    cout << "Вертикальное ускорение равняется: " << a2 << endl;
+    if (a2 > 0.5)
+        cout << "Текущий режим полёта - набор высоты" << endl;
+    else if (a2 >= 0 && a2 <= 0.5)
+        cout << "Текущий режим полёта - горизонтальный полёт" << endl;
+    else
+        cout << "Текущий режим полёта - снижение" << endl;
     return 0;
 }
